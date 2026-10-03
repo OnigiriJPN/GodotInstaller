@@ -1,0 +1,9 @@
+# Visual Studio temporary files
+.vs/
+x64/
+Debug/
+Release/
+*.user
+*.suo
+*.ipdb
+*.iobj

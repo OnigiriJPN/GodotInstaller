@@ -1,0 +1,136 @@
+﻿<Window x:Class="GodotInstaller.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GodotInstaller"
+        mc:Ignorable="d"
+        Title="Godot Installer" Height="480" Width="650"
+        WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize"
+        Background="{DynamicResource AppBgBrush}">
+    <WindowChrome.WindowChrome>
+        <WindowChrome
+            x:Name="CustomWindowChrome"
+            CaptionHeight="32"
+            ResizeBorderThickness="5"
+            GlassFrameThickness="-1"
+            UseAeroCaptionButtons="False"
+            CornerRadius="1"/>
+    </WindowChrome.WindowChrome>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="32"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- ========================================== -->
+        <!-- 1. カスタムタイトルバー -->
+        <!-- ========================================== -->
+        <Grid x:Name="CustomTitleBar" Background="{DynamicResource TitleBarBgBrush}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- アプリタイトル -->
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="12,0,0,0" x:Name="TitleAndIcons">
+                <TextBlock Text="⚡" FontSize="12" Margin="0,0,6,0" Foreground="{DynamicResource TitleBarTextBrush}" x:Name="SysMenu" WindowChrome.IsHitTestVisibleInChrome="True"/>
+                <TextBlock Text="Godot Installer" FontSize="12" Foreground="{DynamicResource TitleBarTextBrush}"/>
+            </StackPanel>
+
+            <!-- 右上のコントロール群 -->
+            <StackPanel Grid.Column="2" Orientation="Horizontal" WindowChrome.IsHitTestVisibleInChrome="True">
+
+                <!-- ネイティブ/カスタム切り替えボタン -->
+                <Button Style="{DynamicResource Win11TitleButtonStyle}" ToolTip="標準 / カスタム タイトルバー切り替え" Click="BtnToggleNativeFrame_Click" Width="36"
+                        Foreground="{DynamicResource TitleBarTextBrush}">
+                    <Path Data="M2,2 L14,2 L14,14 L2,14 Z M2,5 L14,5" 
+                          Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" 
+                          StrokeThickness="1.5" 
+                          HorizontalAlignment="Center" VerticalAlignment="Center" Width="12" Height="12"/>
+                </Button>
+
+                <!-- テーマ切り替えボタン -->
+                <Button Style="{DynamicResource Win11TitleButtonStyle}" Content="🌓" ToolTip="テーマ切り替え" Click="BtnToggleTheme_Click"
+                        Foreground="{DynamicResource TitleBarTextBrush}"/>
+
+                <!-- 最小化ボタン -->
+                <Button Style="{DynamicResource Win11TitleButtonStyle}" Content="🗕" ToolTip="最小化" Click="BtnMinimize_Click" x:Name="MinimizeBtn"
+                        Foreground="{DynamicResource TitleBarTextBrush}"/>
+
+                <!-- 閉じるボタン -->
+                <Button Style="{DynamicResource Win11CloseButtonStyle}" Content="✕" ToolTip="閉じる" Click="BtnClose_Click" x:Name="CloseBtn"
+                        Foreground="{DynamicResource TitleBarTextBrush}"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- ========================================== -->
+        <!-- 2. メインコンテンツグリッド -->
+        <!-- ========================================== -->
+        <Grid Grid.Row="1" Margin="24">
+
+            <!-- ステップ1：利用規約（EULA）画面 -->
+            <Grid x:Name="GridEula" Visibility="Visible">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="利用規約 (EULA)" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,12" Foreground="{DynamicResource AppTextBrush}"/>
+
+                <TextBox Grid.Row="1" x:Name="TxtEulaContent" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" 
+                         VerticalScrollBarVisibility="Auto" Margin="0,0,0,16" Padding="10"
+                         Background="{DynamicResource AppPanelBrush}" 
+                         Foreground="{DynamicResource AppTextBrush}" 
+                         BorderBrush="{DynamicResource AppBorderBrush}"
+                         Text="Godot インストーラー利用規約&#x0a;&#x0a;本ソフトウェアは、Godot Engineのセットアップを簡略化するためのオープンソースツールです。本ツールを使用することによるいかなる問題についても、開発者は責任を負いません。&#x0a;&#x0a;内容をよくお読みいただき、同意される場合のみ次へ進んでください。"/>
+
+                <CheckBox Grid.Row="2" x:Name="ChkAgree" Content="利用規約に同意します" FontSize="13" Margin="0,0,0,16"
+                          Foreground="{DynamicResource AppTextBrush}"
+                          Checked="ChkAgree_Changed" Unchecked="ChkAgree_Changed"/>
+
+                <Button Grid.Row="3" x:Name="BtnNext" Content="次へ" Width="100" Height="32" HorizontalAlignment="Right" 
+                        IsEnabled="False" Click="BtnNext_Click"/>
+            </Grid>
+
+            <!-- ステップ2：インストール実行画面 -->
+            <Grid x:Name="GridInstall" Visibility="Collapsed">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="Godot のダウンロードと展開" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,10" Grid.Row="0" Foreground="{DynamicResource AppTextBrush}"/>
+
+                <StackPanel Grid.Row="1" Margin="0,0,0,10">
+                    <TextBlock x:Name="TxtStatus" Text="「インストール開始」ボタンを押してください。" FontSize="13" Margin="0,0,0,6" Foreground="{DynamicResource AppTextBrush}"/>
+                    <ProgressBar x:Name="ProgressBarMain" Height="18" Value="0" Maximum="100"/>
+                </StackPanel>
+
+                <Button Grid.Row="2" x:Name="BtnToggleDetails" Content="詳細を表示 ▼" Width="100" HorizontalAlignment="Left" 
+                        Click="BtnToggleDetails_Click" Margin="0,0,0,10"/>
+
+                <TextBox Grid.Row="3" x:Name="TxtLog" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" 
+                         VerticalScrollBarVisibility="Auto" Visibility="Collapsed" Margin="0,0,0,10" Padding="5"
+                         FontFamily="Consolas" FontSize="11"
+                         Background="{DynamicResource AppPanelBrush}" 
+                         Foreground="{DynamicResource AppTextBrush}" 
+                         BorderBrush="{DynamicResource AppBorderBrush}"
+                         Text="[情報] インストール待機中...&#x0a;"/>
+
+                <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="戻る" Width="80" Height="30" Margin="0,0,10,0" Click="BtnBack_Click"/>
+                    <Button x:Name="BtnStartInstall" Content="インストール開始" Width="120" Height="30" Click="BtnStartInstall_Click"/>
+                </StackPanel>
+            </Grid>
+
+        </Grid>
+    </Grid>
+</Window>

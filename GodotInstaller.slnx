@@ -1,0 +1,9 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="GodotInstaller.Setup/GodotInstaller.Setup.vcxproj" Id="c158cd3e-c576-4290-93b1-3de28593b3f4" />
+  <Project Path="GodotInstaller/GodotInstaller.csproj" />
+</Solution>
